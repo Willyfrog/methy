@@ -1,10 +1,14 @@
 (import [flask [Flask]])
 (setv app (Flask "__main__"))
 
-(require meth)
+(require methy)
 
 (print "setup / with GET")
-(router index "/" []  (str "Hy world!"))
+(router "/" index []  (str "Hy world!"))
 
 (print "setup / with POST")
-(kwapply (router pindex "/" []  (str "Hy world!")) {"method": ["POST"]})
+(router-with-methods "/" pindex []  (str "Hy post world!") ["POST"])
+
+;;(kwapply (.run app) {"debug" true})
+(.run app)
+
