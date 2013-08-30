@@ -4,11 +4,15 @@
 (require methy)
 
 (print "setup / with GET")
-(router "/" index []  (str "Hy world!"))
+(route index "/" []  (str "Hy world!"))
 
 (print "setup / with POST")
-(router-with-methods "/" pindex []  (str "Hy post world!") ["POST"])
+;;(route-with-methods pindex "/" []  (str "Hy post world!") ["POST"])
+(post-route pindex "/" []  (str "Hy post world!"))
 
+(defn myfun [] (str "Hy rocks"))
+
+;;(route-fun "/yeah" myfun)
 ;;(kwapply (.run app) {"debug" true})
 (.run app)
 
