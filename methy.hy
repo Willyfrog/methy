@@ -1,28 +1,28 @@
+;;; Methy
+;; based on paultag's meth library to access a Flask based application
 
 (defmacro route [name path params code]
+  "Default get request"
   (quasiquote (let [[deco ((getattr app "route") (unquote path))]]
-                (with-decorator deco (defn (unquote name) (unquote params) (unquote-splice code))))))
+                (with-decorator deco 
+                  (defn (unquote name) (unquote params) (unquote-splice code))))))
 
 (defmacro route-with-methods [name path params code methods]
-  (quasiquote (let [[deco (kwapply ((getattr app "route") (unquote path)) {"methods" (unquote methods)}) ]]
-                (with-decorator deco (defn (unquote name) (unquote params) (unquote-splice code))))))
+  "Same as route but with an extra methods array to specify HTTP methods"
+  (quasiquote (let [[deco (kwapply ((getattr app "route") (unquote path)) 
+                                   {"methods" (unquote methods)})]]
+                (with-decorator deco 
+                  (defn (unquote name) (unquote params) (unquote-splice code))))))
 
-(defn  post-route [name path params code]
-  (route-with-methods name path params code ["POST"]))
+;; Some macro examples
+(defmacro post-route [name path params code]
+  "Post request"
+  `(route-with-methods ~name ~path ~params ~code ["POST"]))
 
-;;
-;;(defn post-route [name path params code]
-;;  (route-with-methods name path params code ["GET"]))
+(defmacro put-route [name path params code]
+  "Put request"
+  `(route-with-methods ~name ~path ~params ~code ["PUT"]))
 
-;;(defmacro route-fun [path fun &optional methods]
-;;  (quasiquote 
-;;   (let [[deco (if (none? (unquote methods))
-;;                 ((getattr app "route") (unquote path))
-;;                 (kwapply ((getattr app "route") (unquote path)) {(unquote methods)})
-;;                 )]]
-;;     (with-decorator deco (unquote fun)))))
-
-;;(defmacro route-fun [path fun &optional methods]
-;;  (quasiquote 
-;;   (let [[deco ((getattr app "route") (unquote path))]]
-;;     (with-decorator deco (quote (unquote fun))))))
+(defmacro delete-route [name path params code]
+  "Delete request"
+  `(route-with-methods ~name ~path ~params ~code ["DELETE"]))
